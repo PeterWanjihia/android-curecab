@@ -1,41 +1,74 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import Navbar from "../components/Navbar";
 import TableComponent from "../components/TableComponent";
-import { bold, regular } from "../utils";
-import { ScrollView } from "react-native-gesture-handler";
+import { colors } from "../utils";
+import FeedBack from "../components/FeedBack";
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
+  const onPress = () => {
+    navigation.navigate("Order");
+  };
+
   return (
-    <View className="bg-white flex-1">
+    <View style={{ backgroundColor: "white", flex: 1 }}>
       {/* navbar */}
       <Navbar />
+
       {/* section */}
-      <ScrollView showsVerticalScrollIndicator={false} className="p-3">
-        <View className="my-3">
-          <Text className="text-xl text-lblack" style={bold}>
-            Welcome
+      <ScrollView showsVerticalScrollIndicator={false} style={{ padding: 10 }}>
+        <View>
+          <Text
+            style={{ fontFamily: "Bold", color: colors.lblack, fontSize: 20 }}
+          >
+            Welcome,
           </Text>
-          <Text className="text-2xl my-2" style={bold}>
+          <Text style={{ fontFamily: "Bold", fontSize: 30, marginVertical: 5 }}>
             John Doe
           </Text>
-          <Text className="text-lblack" style={regular}>
+          <Text style={{ fontFamily: "Regular", color: colors.lblack }}>
             You can now request a new order and we'll get it delivered to you.
           </Text>
 
           <TouchableOpacity
+            onPress={onPress}
             activeOpacity={0.6}
-            className=" flex bg-red w-[200px] items-center justify-center rounded-md py-3 my-3 mt-6"
+            style={styles.button}
           >
-            <Text className='text-white text-md' style={bold}>Make an order</Text>
+            <Text style={styles.buttonText}>Make an order</Text>
           </TouchableOpacity>
         </View>
 
         {/* table */}
         <TableComponent />
+
+        {/* Feedback */}
+        <FeedBack />
       </ScrollView>
     </View>
   );
 };
 
 export default Welcome;
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.red,
+    width: 200,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    height: 50,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: colors.white,
+    fontSize: 15,
+    fontFamily: "Bold",
+  },
+});

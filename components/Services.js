@@ -1,7 +1,7 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { memo } from "react";
 import * as Icons from "react-native-vector-icons";
-import { bold, regular } from "../utils";
+import { colors } from "../utils";
 
 const Services = () => {
   const services = [
@@ -23,21 +23,26 @@ const Services = () => {
     },
   ];
   return (
-    <View className="bg-[#F1F5FD] p-4">
-      <Text className="mx-auto text-lg text-dark" style={bold}>
-        ARV Delivery Services:
-      </Text>
-      <Text className="mx-auto text-lg text-dark" style={bold}>
-        Unlocking the Power of Delivery.
-      </Text>
+    <View
+      style={{ backgroundColor: "#F1F5FD", padding: 10, paddingVertical: 30 }}
+    >
+      <Text style={styles.logo}>ARV Delivery Services:</Text>
+      <Text style={styles.logo}>Unlocking the Power of Delivery.</Text>
 
-      <View className="mt-5">
+      <View style={{ marginTop: 10 }}>
         {services.map((service) => (
-          <View key={service.title} className="mt-5 bg-white p-4 z-100 rounded-md shadow-lg
-            flex flex-col items-center text-center py-5">
-            <Icons.Ionicons className='text-red' name="ios-checkmark-circle" size={30} />
-            <Text className='text-center mt-3' style={bold}>{service.title}</Text>
-            <Text className='text-center mt-3 text-lblack' style={regular}>{service.desc}</Text>
+          <View key={service.title} style={styles.view}>
+            <Icons.Ionicons
+              color={colors.red}
+              name="ios-checkmark-circle"
+              size={30}
+            />
+            <Text style={[styles.text, { fontFamily: "Bold" }]}>
+              {service.title}
+            </Text>
+            <Text style={[styles.text, { fontFamily: "Regular" }]}>
+              {service.desc}
+            </Text>
           </View>
         ))}
       </View>
@@ -45,4 +50,25 @@ const Services = () => {
   );
 };
 
-export default Services;
+export default memo(Services);
+
+const styles = StyleSheet.create({
+  logo: {
+    textAlign: "center",
+    fontFamily: "Bold",
+    fontSize: 20,
+  },
+  view: {
+    marginTop: 15,
+    backgroundColor: "white",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 5,
+    paddingVertical: 20,
+    textAlign: "center",
+  },
+  text: {
+    textAlign: "center",
+    marginTop: 10,
+  },
+});

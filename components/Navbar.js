@@ -1,18 +1,45 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { bold } from "../utils";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { colors } from "../utils";
+import { useNavigation } from "@react-navigation/native";
 
-const Navbar = ({ scrollP }) => {
+const Navbar = () => {
+  const navigation = useNavigation();
   return (
-    <View className="flex-row items-center justify-between p-3 py-5">
-      <Text className="text-4xl text-dark text-red font-reg" style={bold}>
-        ARVOME
+    <View style={styles.nav}>
+      <Text style={{ fontFamily: "Bold", fontSize: 25, color: colors.red }}>
+        CURECAB
       </Text>
-      <TouchableOpacity activeOpacity={.6} className='h-[40px] border-red border-[.4px] px-8 items-center justify-center rounded-md'>
-        <Text className='text-lblack' style={bold}>Logout</Text>
-      </TouchableOpacity>
+      <Pressable onPress={() => navigation.goBack()} style={styles.button}>
+        <Text
+          style={{
+            fontFamily: "Bold",
+            paddingHorizontal: 20,
+            color: colors.lblack,
+          }}
+        >
+          Logout
+        </Text>
+      </Pressable>
     </View>
   );
 };
 
 export default Navbar;
+
+const styles = StyleSheet.create({
+  nav: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 15,
+  },
+  button: {
+    height: 40,
+    borderColor: colors.red,
+    borderWidth: 0.7,
+    borderRadius: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    borderStyle: "solid",
+  },
+});

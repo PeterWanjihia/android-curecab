@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "android",
-    "slug": "android",
+    "name": "Curecab",
+    "slug": "Curecab",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/arvome-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.eeddue.curecab"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/arvome-icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "52139191-ec5a-4b4c-b808-7ba893b09241"
+      }
     }
   }
 }

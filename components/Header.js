@@ -1,22 +1,41 @@
-import { View, Text, Pressable } from "react-native";
-import React from "react";
-import { bold, regular } from "../utils";
+import { View, Text, StyleSheet } from "react-native";
+import { memo } from "react";
+import { colors } from "../utils";
 
 const Header = ({ scrollP }) => {
   return (
     <View
-      className={`bg-white flex items-center flex-row justify-between p-4 pt-6 ${
-        scrollP >= 200 && "pt-6 border-bcolor border-b-[.6px]"
-      }`}
+      style={[
+        styles.header,
+        { borderBottomColor: scrollP >= 200 ? colors.bcolor : "white" },
+      ]}
     >
-      <Text className="text-4xl text-dark text-red font-reg" style={bold}>
-        ARVOME
+      <Text
+        style={{
+          fontFamily: "Bold",
+          fontSize: 28,
+          color: colors.red,
+        }}
+      >
+        CURECAB
       </Text>
-      <Text className="text-red text-lblack text-lg" style={regular}>
+      <Text
+        style={{ fontFamily: "Regular", color: colors.lblack, fontSize: 18 }}
+      >
         About
       </Text>
     </View>
   );
 };
 
-export default Header;
+export default memo(Header);
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 15,
+    borderBottomWidth: 0.5,
+  },
+});

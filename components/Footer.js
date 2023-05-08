@@ -1,24 +1,42 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native";
-import React from "react";
-import { bold, regular } from "../utils";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { memo } from "react";
+import { colors } from "../utils";
 
-const Footer = ({ setshowLoginModal }) => {
+const Footer = ({ onPress }) => {
   return (
-    <View className="p-4 bg-black h-[400px] flex justify-center items-center">
-      <Text style={bold} className="text-white text-3xl text-center">
+    <View style={styles.screen}>
+      <Text style={[styles.text, { fontFamily: "Bold", fontSize: 25 }]}>
         Convenient ARV Delivery
       </Text>
-      <Text style={regular} className="text-white text-center my-4">
+      <Text
+        style={[
+          styles.text,
+          { fontFamily: "Regular", fontSize: 14, marginVertical: 25 },
+        ]}
+      >
         Enjoy the convenience of ARV Delivery Order your drugs now and have them
         delivered to your home!
       </Text>
 
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={() => setshowLoginModal(true)}
-        className="bg-red py-3 rounded-full w-full"
+        onPress={onPress}
+        style={{
+          backgroundColor: colors.red,
+          borderRadius: 70,
+          width: "80%",
+          height: 50,
+          justifyContent: "center",
+        }}
       >
-        <Text style={bold} className="text-white text-center text-lg">
+        <Text
+          style={{
+            fontFamily: "Bold",
+            color: "white",
+            fontSize: 18,
+            textAlign: "center",
+          }}
+        >
           Make a request
         </Text>
       </TouchableOpacity>
@@ -26,4 +44,18 @@ const Footer = ({ setshowLoginModal }) => {
   );
 };
 
-export default Footer;
+export default memo(Footer);
+
+const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: "black",
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 400,
+  },
+  text: {
+    color: "white",
+    textAlign: "center",
+  },
+});

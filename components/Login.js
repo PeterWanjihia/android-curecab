@@ -1,55 +1,47 @@
-import React from "react";
 import {
   Pressable,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import * as Icons from "react-native-vector-icons";
-import { bold, regular } from "../utils";
+import { colors } from "../utils";
 
-function Login({ setshowLoginModal, navigation }) {
-  const login =  () => {
-    setshowLoginModal(false);
+function Login({ onPress, navigation }) {
+  const login = () => {
+    onPress();
     navigation.push("Welcome");
   };
   return (
-    <View className="bg-[#00000029] flex-1 flex justify-center px-3">
-      <View className="bg-white p-4">
-        <View className="flex-row items-center">
-          <Text className="mx-auto text-2xl" style={bold}>
-            Login
-          </Text>
+    <View style={styles.screen}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={{ fontFamily: "Bold", fontSize: 20 }}>Login</Text>
           <Pressable
-            className="absolute right-0"
-            onPress={() => setshowLoginModal(false)}
+            style={{ position: "absolute", right: 10 }}
+            onPress={onPress}
           >
-            <Icons.Feather className="text-3xl text-red" name="x" size={40} />
+            <Icons.Feather color={colors.lblack} name="x" size={25} />
           </Pressable>
         </View>
-        <View className="mt-3">
-          <Text style={bold}>Unique Patient identifier (UPI)</Text>
-          <TextInput
-            className="bg-input p-2 mt-2 text-lblack"
-            style={regular}
-            placeholder="Your UPI"
-          />
+        <View style={{ marginTop: 10 }}>
+          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>
+            Unique Patient identifier (UPI)
+          </Text>
+          <TextInput style={styles.input} placeholder="Your UPI" />
         </View>
-        <View className="mt-3">
-          <Text style={bold}>Password</Text>
-          <TextInput
-            className="bg-input p-2 mt-2 text-lblack"
-            style={regular}
-            placeholder="password"
-          />
+        <View style={{ marginTop: 10 }}>
+          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>Password</Text>
+          <TextInput style={styles.input} placeholder="password" />
         </View>
         <TouchableOpacity
           onPress={login}
-          activeStyle={0.7}
-          className="mt-3 bg-red h-[50px] mt-6 rounded-md items-center justify-center"
+          activeOpacity={0.85}
+          style={styles.button}
         >
-          <Text className="text-xl text-white" style={bold}>
+          <Text style={{ fontFamily: "Bold", fontSize: 18, color: "white" }}>
             Login
           </Text>
         </TouchableOpacity>
@@ -59,3 +51,38 @@ function Login({ setshowLoginModal, navigation }) {
 }
 
 export default Login;
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+  container: {
+    backgroundColor: "white",
+    padding: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    height: "70%",
+    marginTop: "auto",
+    elevation: 100,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    justifyContent: "center",
+  },
+  input: {
+    fontFamily: "Regular",
+    backgroundColor: colors.input,
+    padding: 10,
+    color: colors.lblack,
+    marginTop: 5,
+  },
+  button: {
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.red,
+    height: 50,
+  },
+});

@@ -1,44 +1,104 @@
-import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
-import React from "react";
-import { bold, regular } from "../utils";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+  Alert,
+} from "react-native";
+import { memo } from "react";
+import { colors } from "../utils";
 
-const HeroSection = ({ setshowLoginModal }) => {
+const HeroSection = ({ onPress }) => {
+  const navigate = () => {
+    Linking.openURL("https://nishauritest.kenyahmis.org/login").catch((err) =>
+      Alert.alert("There was an error! Please try again.")
+    );
+  };
+
   return (
-    <View className="bg-white p-4 h-[600px] flex flex-col justify-center">
+    <View style={styles.screen}>
       <View>
-        <Text className="text-3xl mr-10 mb-5" style={bold}>
+        <Text
+          style={{
+            fontFamily: "Bold",
+            fontSize: 25,
+            marginRight: 15,
+            marginBottom: 10,
+          }}
+        >
           Stay healthy with ARV delivery!
         </Text>
-        <Text className="text-xl text-lblack" style={regular}>
+        <Text
+          style={{
+            fontFamily: "Regular",
+            fontSize: 18,
+            color: colors.lblack,
+          }}
+        >
           Take the hassle out of getting your ARV medications and have them
           delivered to you quickly and easily.
         </Text>
 
-        <View className="flex flex-row gap-3 my-5">
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            marginVertical: 20,
+          }}
+        >
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => setshowLoginModal(true)}
-            className="bg-red flex-1 rounded-full flex items-center py-3"
+            onPress={onPress}
+            style={[styles.button, { backgroundColor: colors.red }]}
           >
-            <Text className="text-white text-sm" style={bold}>
-              Make a request
-            </Text>
+            <Text style={styles.buttonText}>Make a request</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#3F00FF] flex-1 rounded-full flex items-center py-3">
-            <Text className="text-white text-sm" style={bold}>
-              Book appointment
-            </Text>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={navigate}
+            style={[styles.button, { backgroundColor: "#3F00FF" }]}
+          >
+            <Text style={styles.buttonText}>Book appointment</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View>
         <Image
           source={require("../assets/medicines.png")}
-          className="h-40 w-40 mx-auto mt-8"
+          style={{
+            alignSelf: "center",
+            marginTop: 50,
+            height: 160,
+            width: 160,
+          }}
         />
       </View>
     </View>
   );
 };
 
-export default HeroSection;
+export default memo(HeroSection);
+
+const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: "white",
+    padding: 15,
+    height: 600,
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  button: {
+    flex: 1,
+    height: 45,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+  },
+  buttonText: {
+    fontFamily: "Bold",
+    fontSize: 14,
+    color: "white",
+  },
+});

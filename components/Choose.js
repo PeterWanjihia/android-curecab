@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import * as Icons from "react-native-vector-icons";
-import { bold, regular } from "../utils";
+import { colors } from "../utils";
+import { memo } from "react";
 
 const Choose = () => {
   const reasons = [
@@ -18,14 +19,33 @@ const Choose = () => {
     },
   ];
   return (
-    <View className='bg-white p-4 py-10'>
-      <Text className='text-2xl mx-auto' style={bold}>Why choose us</Text>
+    <View
+      style={{
+        backgroundColor: "white",
+        paddingHorizontal: 10,
+        paddingVertical: 60,
+      }}
+    >
+      <Text style={{ fontFamily: "Bold", textAlign: "center", fontSize: 25 }}>
+        ~ Why choose us ~
+      </Text>
       {reasons.map((reason) => (
-        <View key={reason.title} className='flex flex-row pr-5 mt-5'>
-          <Icons.Ionicons name="ios-checkmark-circle" size={30} className='text-red' />
-          <View className='ml-3'>
-            <Text className='text-lg' style={bold}>{reason.title}</Text>
-            <Text className='text-lblack' style={regular}>{reason.desc}</Text>
+        <View
+          key={reason.title}
+          style={{ flexDirection: "row", paddingRight: 10, marginTop: 15 }}
+        >
+          <Icons.Ionicons
+            name="ios-checkmark-circle"
+            size={30}
+            color={colors.red}
+          />
+          <View style={{ marginLeft: 10, paddingRight: 15 }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 16 }}>
+              {reason.title}
+            </Text>
+            <Text style={{ fontFamily: "Regular", color: colors.lblack }}>
+              {reason.desc}
+            </Text>
           </View>
         </View>
       ))}
@@ -33,4 +53,4 @@ const Choose = () => {
   );
 };
 
-export default Choose;
+export default memo(Choose);

@@ -1,22 +1,25 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import colors from "../utils";
+import { View, ScrollView, Modal, StyleSheet } from "react-native";
+import { useCallback, useState } from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import About from "../components/About";
 import Choose from "../components/Choose";
 import Services from "../components/Services";
 import Footer from "../components/Footer";
-import { Modal } from "react-native";
 import Login from "../components/Login";
+import { colors } from "../utils";
 
 const Home = ({ navigation }) => {
   const [scrollP, setScrollP] = useState(0);
-  const [showLoginModal, setshowLoginModal] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const handleScroll = (event) => {
     setScrollP(event.nativeEvent.contentOffset.y);
   };
+
+  const onPress = useCallback(() => {
+    setVisible((prev) => !prev);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -24,10 +27,7 @@ const Home = ({ navigation }) => {
       <Header scrollP={scrollP} />
       <ScrollView onScroll={handleScroll} showsVerticalScrollIndicator={false}>
         {/* herosection */}
-        <HeroSection
-          setshowLoginModal={setshowLoginModal}
-          showLoginModal={showLoginModal}
-        />
+        <HeroSection onPress={onPress} />
 
         {/* about */}
         <About />
@@ -39,17 +39,11 @@ const Home = ({ navigation }) => {
         <Choose />
 
         {/* footer */}
-        <Footer
-          setshowLoginModal={setshowLoginModal}
-          showLoginModal={showLoginModal}
-        />
+        <Footer onPress={onPress} />
 
         {/* login modal */}
-        <Modal transparent animationType="slide" visible={showLoginModal}>
-          <Login
-            setshowLoginModal={setshowLoginModal}
-            navigation={navigation}
-          />
+        <Modal transparent animationType="slide" visible={visible}>
+          <Login onPress={onPress} navigation={navigation} />
         </Modal>
       </ScrollView>
     </View>
@@ -60,7 +54,7 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.white,
+    flex: 1,
   },
 });
