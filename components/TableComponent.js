@@ -1,7 +1,8 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Table, Row } from "react-native-table-component";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
+
 
 const TableComponent = () => {
   const [orders, setOrders] = useState([1, 2, 3, 4, 5, 6, 7]);

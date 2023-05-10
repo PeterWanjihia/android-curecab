@@ -7,8 +7,9 @@ const DropDown = ({ data, title, setValue, value, onChange }) => {
   return (
     <View>
       <Dropdown
+        mode="modal"
         style={[styles.dropdown, isFocus && { borderColor: "#F24A4E" }]}
-        placeholderStyle={[styles.placeholderStyle]}
+        placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}

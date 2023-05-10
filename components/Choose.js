@@ -1,17 +1,21 @@
 import { View, Text } from "react-native";
 import * as Icons from "react-native-vector-icons";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 import { memo } from "react";
 
 const Choose = () => {
   const reasons = [
+    {
+      title: "Confidentiality",
+      desc: "Patients personal data is well handled throughout the delivery process without outsiders getting involved.",
+    },
     {
       title: "Convenience",
       desc: "Patients can order their drugs from the comfort of their homes, without having to visit the clinic.",
     },
     {
       title: "Ease of Access",
-      desc: "Patients can access their drugs easily and quickly, with no need to travel to clinics.",
+      desc: "Patients can access our services through our website, mobile app and USSD.",
     },
     {
       title: "Fast delivery",

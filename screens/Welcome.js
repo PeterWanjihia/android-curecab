@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import Navbar from "../components/Navbar";
 import TableComponent from "../components/TableComponent";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 import FeedBack from "../components/FeedBack";
 
 const Welcome = ({ navigation }) => {
@@ -17,10 +17,8 @@ const Welcome = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
-      {/* navbar */}
       <Navbar />
 
-      {/* section */}
       <ScrollView showsVerticalScrollIndicator={false} style={{ padding: 10 }}>
         <View>
           <Text
@@ -44,10 +42,8 @@ const Welcome = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* table */}
         <TableComponent />
 
-        {/* Feedback */}
         <FeedBack />
       </ScrollView>
     </View>

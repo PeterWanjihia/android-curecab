@@ -11,7 +11,7 @@ import {
 import { useCallback, useState } from "react";
 import * as Icons from "react-native-vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 import DropDown from "../components/DropDown";
 import dayjs from "dayjs";
 
@@ -121,7 +121,7 @@ const Order = ({ navigation }) => {
 
         {/* delivery address  */}
         <View style={{ marginBottom: 10 }}>
-          <Text style={[regular, { marginBottom: 3 }]}>Delivery Address</Text>
+          <Text style={{ marginBottom: 3 }}>Delivery Address</Text>
           <TextInput style={styles.input} placeholder="1234 Example" />
         </View>
 
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     fontFamily: "Regular",
     backgroundColor: colors.input,
     height: 45,
-    paddingHorizontal: 3,
+    paddingHorizontal: 5,
     fontSize: 14,
     color: colors.lblack,
   },
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     fontFamily: "Regular",
     color: colors.lblack,
     fontSize: 14,
+    paddingHorizontal: 5,
   },
   button: {
     backgroundColor: colors.red,

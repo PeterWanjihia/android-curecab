@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { memo } from "react";
 
 const About = () => {
@@ -21,14 +21,20 @@ const About = () => {
           paddingVertical: 30,
         }}
       >
-        Our app delivers affordable and reliable ARV pills to patients in need,
-        regardless of their location or financial situation. Our dedicated team
-        is passionate about improving healthcare outcomes, sourcing the highest
-        quality medication and delivering it efficiently. We prioritize
-        transparency, honesty and excellent customer service, and we're always
-        available to help with any questions or concerns. Thank you for choosing
-        us as your provider of life-saving medication.
+        We are dedicated in improving health care services by ensuring there is
+        efficient and timely delivering of ARV drugs. We prioritize client's
+        confidentiality and provide excellent customer services to address any
+        questions and concerns.
       </Text>
+      <Image
+        source={require("../assets/images/route.gif")}
+        style={{
+          aspectRatio: 1,
+          height: 200,
+          alignSelf: "center",
+          marginBottom: 20,
+        }}
+      />
     </View>
   );
 };

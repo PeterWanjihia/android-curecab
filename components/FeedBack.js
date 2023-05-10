@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
+
 
 const FeedBack = () => {
   return (

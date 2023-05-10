@@ -7,15 +7,10 @@ import Choose from "../components/Choose";
 import Services from "../components/Services";
 import Footer from "../components/Footer";
 import Login from "../components/Login";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 
 const Home = ({ navigation }) => {
-  const [scrollP, setScrollP] = useState(0);
-  const [visible, setVisible] = useState(false);
-
-  const handleScroll = (event) => {
-    setScrollP(event.nativeEvent.contentOffset.y);
-  };
+  const [visible, setVisible] = useState(false)
 
   const onPress = useCallback(() => {
     setVisible((prev) => !prev);
@@ -23,25 +18,18 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* header */}
-      <Header scrollP={scrollP} />
-      <ScrollView onScroll={handleScroll} showsVerticalScrollIndicator={false}>
-        {/* herosection */}
+      <Header />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <HeroSection onPress={onPress} />
 
-        {/* about */}
         <About />
 
-        {/* services */}
         <Services />
 
-        {/* why us */}
         <Choose />
 
-        {/* footer */}
         <Footer onPress={onPress} />
 
-        {/* login modal */}
         <Modal transparent animationType="slide" visible={visible}>
           <Login onPress={onPress} navigation={navigation} />
         </Modal>

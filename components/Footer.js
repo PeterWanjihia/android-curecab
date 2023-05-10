@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { memo } from "react";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 
 const Footer = ({ onPress }) => {
   return (
     <View style={styles.screen}>
-      <Text style={[styles.text, { fontFamily: "Bold", fontSize: 25 }]}>
-        Convenient ARV Delivery
+      <Text style={[styles.text, { fontFamily: "Bold", fontSize: 28 }]}>
+        Let's gooo!!!
       </Text>
       <Text
         style={[
@@ -37,7 +37,7 @@ const Footer = ({ onPress }) => {
             textAlign: "center",
           }}
         >
-          Make a request
+          Order now
         </Text>
       </TouchableOpacity>
     </View>

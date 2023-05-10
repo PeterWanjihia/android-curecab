@@ -7,10 +7,10 @@ import {
   View,
 } from "react-native";
 import * as Icons from "react-native-vector-icons";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 
 function Login({ onPress, navigation }) {
-  const login = () => {
+  const handleLogin = () => {
     onPress();
     navigation.push("Welcome");
   };
@@ -37,7 +37,7 @@ function Login({ onPress, navigation }) {
           <TextInput style={styles.input} placeholder="password" />
         </View>
         <TouchableOpacity
-          onPress={login}
+          onPress={handleLogin}
           activeOpacity={0.85}
           style={styles.button}
         >
@@ -55,6 +55,7 @@ export default Login;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: "#00000009",
   },
   container: {
     backgroundColor: "white",

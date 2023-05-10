@@ -1,9 +1,10 @@
 import "react-native-gesture-handler";
-import { StyleSheet, View, StatusBar } from "react-native";
-import Screens from "./Navigation";
+import { useCallback } from "react";
+import { StyleSheet, View } from "react-native";
+import Navigation from "./Navigation";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,7 +24,8 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <Screens />
+      <Navigation />
+      <StatusBar style="dark" />
     </View>
   );
 }
@@ -32,6 +34,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: StatusBar.currentHeight,
   },
 });

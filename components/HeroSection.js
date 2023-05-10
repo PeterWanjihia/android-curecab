@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { memo } from "react";
-import { colors } from "../utils";
+import { colors } from "../assets/colors";
 
 const HeroSection = ({ onPress }) => {
   const navigate = () => {
@@ -23,17 +23,17 @@ const HeroSection = ({ onPress }) => {
         <Text
           style={{
             fontFamily: "Bold",
-            fontSize: 25,
+            fontSize: 35,
             marginRight: 15,
             marginBottom: 10,
           }}
         >
-          Stay healthy with ARV delivery!
+          Usi-<Text style={{ color: colors.red }}>tense</Text>!
         </Text>
         <Text
           style={{
             fontFamily: "Regular",
-            fontSize: 18,
+            fontSize: 16,
             color: colors.lblack,
           }}
         >
@@ -53,7 +53,7 @@ const HeroSection = ({ onPress }) => {
             onPress={onPress}
             style={[styles.button, { backgroundColor: colors.red }]}
           >
-            <Text style={styles.buttonText}>Make a request</Text>
+            <Text style={styles.buttonText}>Order now</Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.6}
@@ -66,7 +66,7 @@ const HeroSection = ({ onPress }) => {
       </View>
       <View>
         <Image
-          source={require("../assets/medicines.png")}
+          source={require("../assets/images/medicines.png")}
           style={{
             alignSelf: "center",
             marginTop: 50,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: "white",
     padding: 15,
-    height: 600,
+    height: 500,
     flexDirection: "column",
     justifyContent: "center",
   },
