@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { memo } from "react";
 import { colors } from "../assets/colors";
 
-const Footer = ({ onPress }) => {
+const Footer = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <Text style={[styles.text, { fontFamily: "Bold", fontSize: 28 }]}>
@@ -20,7 +20,7 @@ const Footer = ({ onPress }) => {
 
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={onPress}
+        onPress={() => navigation.navigate("Login")}
         style={{
           backgroundColor: colors.red,
           borderRadius: 70,

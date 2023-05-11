@@ -5,6 +5,9 @@ import Navigation from "./Navigation";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import ToastContainer from "react-native-toast-message";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +27,10 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <Navigation />
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
+      <ToastContainer />
       <StatusBar style="dark" />
     </View>
   );

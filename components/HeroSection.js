@@ -10,7 +10,7 @@ import {
 import { memo } from "react";
 import { colors } from "../assets/colors";
 
-const HeroSection = ({ onPress }) => {
+const HeroSection = ({ navigation }) => {
   const navigate = () => {
     Linking.openURL("https://nishauritest.kenyahmis.org/login").catch((err) =>
       Alert.alert("There was an error! Please try again.")
@@ -50,7 +50,7 @@ const HeroSection = ({ onPress }) => {
         >
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={onPress}
+            onPress={() => navigation.navigate('Login')}
             style={[styles.button, { backgroundColor: colors.red }]}
           >
             <Text style={styles.buttonText}>Order now</Text>

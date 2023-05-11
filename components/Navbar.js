@@ -1,15 +1,16 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { colors } from "../assets/colors";
-import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { signOut } from "../redux/features/AuthSlice";
 
 const Navbar = () => {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
   return (
     <View style={styles.nav}>
       <Text style={{ fontFamily: "Bold", fontSize: 25, color: colors.red }}>
         CURECAB
       </Text>
-      <Pressable onPress={() => navigation.goBack()} style={styles.button}>
+      <Pressable onPress={() => dispatch(signOut())} style={styles.button}>
         <Text
           style={{
             fontFamily: "Bold",

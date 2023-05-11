@@ -14,27 +14,18 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { colors } from "../assets/colors";
 import DropDown from "../components/DropDown";
 import dayjs from "dayjs";
+import { couriers, facilities } from "../data";
 
 const Order = ({ navigation }) => {
   const [value, setValue] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
+  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
-  const [county, setCounty] = useState("");
-  const [constituency, setConstituency] = useState("");
-  const [ward, setWard] = useState("");
-  const [clinic, setClinic] = useState("");
+
+  const [date, setDate] = useState(new Date());
+  const [facility, setFacility] = useState("");
   const [courier, setCourier] = useState("");
   const [address, setAddress] = useState("");
   const [deliveryDate, setdDeliveryDate] = useState("");
-  const [counties, setCounties] = useState([]);
-  const data = [
-    { label: "Item 1", value: "1" },
-    { label: "Item 2", value: "2" },
-    { label: "Item 3", value: "3" },
-    { label: "Item 4", value: "4" },
-    { label: "Item 5", value: "5" },
-  ];
 
   const onChangeTime = useCallback((time) => {
     setShow(false);
@@ -51,78 +42,43 @@ const Order = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} style={{ padding: 10 }}>
-        {/* county select */}
+        {/* select facility */}
         <View style={{ marginBottom: 10 }}>
-          <Text style={styles.label}>County</Text>
+          <Text style={styles.label}>Clinic</Text>
           <DropDown
-            data={data}
-            title="Select county"
+            data={facilities.map((fc) => {
+              return { label: fc.name, value: fc.name };
+            })}
+            title="Select clinic"
             setValue={setValue}
-            value={county}
-            onChange={(value) => setCounty(value)}
+            value={facility}
+            onChange={(value) => setFacility(value)}
           />
         </View>
 
-        {/* constituency select */}
-        {county ? (
-          <View style={{ marginBottom: 10 }}>
-            <Text style={styles.label}>Constituency</Text>
-            <DropDown
-              data={data}
-              title="Select constituency"
-              setValue={setValue}
-              value={constituency}
-              onChange={(value) => setConstituency(value)}
-            />
-          </View>
-        ) : null}
-
-        {/* ward select */}
-        {constituency ? (
-          <View style={{ marginBottom: 10 }}>
-            <Text style={styles.label}>Ward</Text>
-            <DropDown
-              data={data}
-              title="Select ward"
-              setValue={setValue}
-              value={ward}
-              onChange={(value) => setWard(value)}
-            />
-          </View>
-        ) : null}
-
-        {/* select clinic */}
-        {ward ? (
-          <View style={{ marginBottom: 10 }}>
-            <Text style={styles.label}>Clinic</Text>
-            <DropDown
-              data={data}
-              title="Select clinic"
-              setValue={setValue}
-              value={clinic}
-              onChange={(value) => setClinic(value)}
-            />
-          </View>
-        ) : null}
-
         {/* courier select */}
-        {clinic ? (
-          <View style={{ marginBottom: 10 }}>
-            <Text style={styles.label}>Courier</Text>
-            <DropDown
-              data={data}
-              title="Select courier"
-              setValue={setValue}
-              value={courier}
-              onChange={(value) => setCourier(value)}
-            />
-          </View>
-        ) : null}
+        <View style={{ marginBottom: 10 }}>
+          <Text style={styles.label}>Preffered Courier</Text>
+          <DropDown
+            data={couriers.map((co) => {
+              return { label: co, value: co };
+            })}
+            title="Select courier"
+            setValue={setValue}
+            value={courier}
+            onChange={(value) => setCourier(value)}
+          />
+        </View>
 
         {/* delivery address  */}
         <View style={{ marginBottom: 10 }}>
           <Text style={{ marginBottom: 3 }}>Delivery Address</Text>
-          <TextInput style={styles.input} placeholder="1234 Example" />
+          <TextInput
+            value={address}
+            onChangeText={(value) => setAddress(value)}
+            style={styles.input}
+            placeholder="1234 Example"
+          />
         </View>
 
         {/* delivery date  */}
@@ -143,6 +99,8 @@ const Order = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
+
+        {/* Date picker */}
         {show ? (
           <DateTimePicker
             value={new Date(date)}
