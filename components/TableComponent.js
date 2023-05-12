@@ -1,12 +1,20 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, Row } from "react-native-table-component";
 import { colors } from "../assets/colors";
-
+import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 const TableComponent = () => {
-  const [orders, setOrders] = useState([1, 2, 3, 4, 5, 6, 7]);
+  const [loading, setLoading] = useState(true);
+  const { orders } = useSelector((store) => store.orders);
   const tableTitles = ["Date", "Order ID", "Delivery fee", "Status"];
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   return (
     <View style={{ marginTop: 10 }}>
@@ -31,12 +39,12 @@ const TableComponent = () => {
           {orders?.map((order, i) => {
             return (
               <Row
-                key={order}
+                key={order.orderId}
                 data={[
-                  DateComp("23/3/2034"),
-                  OrderIdComp("34f45grfeg45"),
-                  PriceComp("3,410"),
-                  StatusComp("Delivered", "deliv", i),
+                  DateComp(order.orderDate),
+                  OrderIdComp(order.orderId),
+                  PriceComp(order.deliveryFee),
+                  StatusComp(order.status),
                 ]}
                 style={{ height: 35, backgroundColor: "white" }}
                 widthArr={[125, 150, 100, 125]}
@@ -61,7 +69,7 @@ const DateComp = (date) => {
         fontSize: 13,
       }}
     >
-      {date}
+      {dayjs(date).format("DD/MM/YYYY")}
     </Text>
   );
 };
@@ -91,31 +99,43 @@ const PriceComp = (price) => {
         fontSize: 13,
       }}
     >
-      Ksh <Text>{price}</Text>
+      Ksh <Text style={{ fontFamily: "Bold" }}>{price}</Text>
     </Text>
   );
 };
 
-const StatusComp = (value, status, i) => {
+const StatusComp = (status) => {
   const all = {
     delivered: { bg: "#FCF4C7", color: "#854E23" },
     pending: { bg: "#C8F7DF", color: "#559982" },
     failed: { bg: "#F8EAE9", color: "#752E32" },
+  };
+
+  const getBg = (status) => {
+    if (status === "pending") return all.pending.bg;
+    if (status === "failed") return all.failed.bg;
+    return all.delivered.bg;
+  };
+
+  const getColor = (status) => {
+    if (status === "pending") return all.pending.color;
+    if (status === "failed") return all.failed.color;
+    return all.delivered.color;
   };
   return (
     <Text
       style={{
         textAlign: "center",
         fontFamily: "Regular",
-        backgroundColor: i % 2 === 0 ? all.pending.bg : all.delivered.bg,
-        color: i % 2 === 0 ? all.pending.color : all.delivered.color,
+        backgroundColor: getBg(status),
+        color: getColor(status),
         borderRadius: 20,
         marginHorizontal: 10,
         paddingVertical: 3,
         fontSize: 12,
       }}
     >
-      {i % 2 === 0 ? "Delivered" : "Pending"}
+      {status}
     </Text>
   );
 };

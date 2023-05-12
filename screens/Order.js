@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { useCallback, useState } from "react";
 import * as Icons from "react-native-vector-icons";
@@ -14,23 +15,61 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { colors } from "../assets/colors";
 import DropDown from "../components/DropDown";
 import dayjs from "dayjs";
-import { couriers, facilities } from "../data";
+import Toast from "react-native-toast-message";
+import { couriers, facilities, generateOrderId } from "../data";
+import { useDispatch, useSelector } from "react-redux";
+import { updateOrders } from "../redux/features/OrderSlice";
 
 const Order = ({ navigation }) => {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
-  const [date, setDate] = useState(new Date());
   const [facility, setFacility] = useState("");
   const [courier, setCourier] = useState("");
   const [address, setAddress] = useState("");
-  const [deliveryDate, setdDeliveryDate] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState(new Date());
+
+  const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
 
   const onChangeTime = useCallback((time) => {
     setShow(false);
-    setDate(time.nativeEvent.timestamp);
+    setDeliveryDate(time.nativeEvent.timestamp);
   }, []);
+
+  const handleSubmit = () => {
+    if (!facility || !courier || !address || !deliveryDate) {
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "All input fields are required.",
+      });
+    }
+
+    setLoading(true);
+    setTimeout(() => {
+      dispatch(
+        updateOrders({
+          facility,
+          courier,
+          deliveryFee: 400,
+          orderId: generateOrderId(),
+          deliverBy: new Date().getTime() + 60000000,
+          address,
+          client: user.phone,
+          status: "pending",
+        })
+      );
+      setLoading(false);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Your order has been placed successfully.",
+      });
+      return navigation.navigate("Welcome");
+    }, 1500);
+  };
 
   return (
     <KeyboardAvoidingView style={{ backgroundColor: "white", flex: 1 }}>
@@ -90,7 +129,7 @@ const Order = ({ navigation }) => {
             style={styles.calendar}
           >
             <Text style={styles.calendarText}>
-              Change -- {dayjs(date).format("DD/MM/YYYY")} --
+              Change -- {dayjs(deliveryDate).format("DD/MM/YYYY")} --
             </Text>
             <Icons.Entypo
               color={colors.lblack}
@@ -103,14 +142,24 @@ const Order = ({ navigation }) => {
         {/* Date picker */}
         {show ? (
           <DateTimePicker
-            value={new Date(date)}
+            value={new Date(deliveryDate)}
             onChange={(value) => onChangeTime(value)}
             minimumDate={new Date()}
           />
         ) : null}
 
-        <TouchableOpacity activeOpacity={0.7} style={styles.button}>
-          <Text style={styles.buttonText}>Order now</Text>
+        <TouchableOpacity
+          onPress={handleSubmit}
+          activeOpacity={0.7}
+          style={styles.button}
+        >
+          {loading ? (
+            <ActivityIndicator color={colors.white} size={30} />
+          ) : (
+            <Text style={{ fontFamily: "Bold", fontSize: 18, color: "white" }}>
+              Order
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

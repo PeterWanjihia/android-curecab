@@ -40,20 +40,24 @@ function Login({ navigation }) {
     setLoading(true);
     setTimeout(() => {
       const user = patients.find((p) => p.phone === phone);
-      if (!user)
+      if (!user) {
+        setLoading(false);
         return Toast.show({
           type: "error",
           text1: "Error",
           text2: "Invalid credentials.",
         });
+      }
 
       const passwordMatch = password === user.password;
-      if (!passwordMatch)
+      if (!passwordMatch) {
+        setLoading(false);
         return Toast.show({
           type: "error",
           text1: "Error",
           text2: "Invalid credentials.",
         });
+      }
 
       dispatch(setUser(user));
       setLoading(false);
@@ -72,7 +76,7 @@ function Login({ navigation }) {
       contentContainerStyle={styles.screen}
     >
       <Pressable
-        style={{ position: "absolute", left: 10, top: 10 }}
+        style={{ position: "absolute", left: 10, top: 10, zIndex: 23 }}
         onPress={() => navigation.goBack()}
       >
         <Icons.MaterialCommunityIcons
@@ -104,6 +108,7 @@ function Login({ navigation }) {
           onChangeText={(value) => setPassword(value.trim())}
           style={styles.input}
           placeholder="password"
+          secureTextEntry
         />
       </View>
 

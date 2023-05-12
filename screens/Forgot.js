@@ -29,19 +29,21 @@ function Forgot({ navigation }) {
     setLoading(true);
     setTimeout(() => {
       const user = patients.find((p) => p.phone === phone);
-      if (!user)
+      if (!user) {
+        setLoading(false);
         return Toast.show({
           type: "error",
           text1: "Error",
           text2: "Invalid credentials.",
         });
+      }
 
       setLoading(false);
 
       return Toast.show({
         type: "success",
         text1: "Success",
-        text2: "A verification has been sent to you.",
+        text2: "A password reset link has been sent to your phone number.",
       });
     }, 1000);
   };

@@ -43,8 +43,8 @@ const Welcome = ({ navigation }) => {
         </View>
 
         <TableComponent />
-
-        <FeedBack />
+        {/* 
+        <FeedBack /> */}
       </ScrollView>
     </View>
   );

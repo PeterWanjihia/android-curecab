@@ -18,16 +18,18 @@ function Navigation() {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+
+  const getAuthUser = async () => {
+    const res = await AsyncStorage.getItem("user");
+    setLoading(false);
+    dispatch(setUser(res));
+  };
+
   useEffect(() => {
-    const getAuthUser = async () => {
-      const res = await AsyncStorage.getItem("user");
-      setLoading(false);
-      return dispatch(setUser(res));
-    };
     getAuthUser();
   }, []);
 
-  if (loading) return null;
+  if (loading) return <View />;
   return (
     <View style={{ paddingTop: StatusBar.currentHeight, flex: 1 }}>
       <NavigationContainer>
