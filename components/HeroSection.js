@@ -13,7 +13,7 @@ import { colors } from "../assets/colors";
 const HeroSection = ({ navigation }) => {
   const navigate = () => {
     Linking.openURL(
-      "https://play.google.com/store/apps/details?id=com.mhealth.nishauriorg/login"
+      "https://play.google.com/store/apps/details?id=com.mhealth.nishauri"
     ).catch((err) => Alert.alert("There was an error! Please try again."));
   };
 
