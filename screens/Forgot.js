@@ -18,7 +18,7 @@ function Forgot({ navigation }) {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleSubmit = () => {
     if (!phone)
       return Toast.show({
         type: "error",
@@ -90,7 +90,7 @@ function Forgot({ navigation }) {
       </View>
 
       <TouchableOpacity
-        onPress={handleLogin}
+        onPress={handleSubmit}
         activeOpacity={0.85}
         style={styles.button}
       >

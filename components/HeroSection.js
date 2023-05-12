@@ -12,9 +12,9 @@ import { colors } from "../assets/colors";
 
 const HeroSection = ({ navigation }) => {
   const navigate = () => {
-    Linking.openURL("https://nishauritest.kenyahmis.org/login").catch((err) =>
-      Alert.alert("There was an error! Please try again.")
-    );
+    Linking.openURL(
+      "https://play.google.com/store/apps/details?id=com.mhealth.nishauriorg/login"
+    ).catch((err) => Alert.alert("There was an error! Please try again."));
   };
 
   return (
@@ -50,7 +50,7 @@ const HeroSection = ({ navigation }) => {
         >
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate("Login")}
             style={[styles.button, { backgroundColor: colors.red }]}
           >
             <Text style={styles.buttonText}>Order now</Text>
