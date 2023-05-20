@@ -19,13 +19,12 @@ function Navigation() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
-  const getAuthUser = async () => {
-    const res = await AsyncStorage.getItem("user");
-    setLoading(false);
-    dispatch(setUser(res));
-  };
-
   useEffect(() => {
+    const getAuthUser = async () => {
+      const res = await AsyncStorage.getItem("user");
+      setLoading(false);
+      dispatch(setUser(JSON.parse(res)));
+    };
     getAuthUser();
   }, []);
 

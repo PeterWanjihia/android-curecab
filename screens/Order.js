@@ -19,6 +19,8 @@ import Toast from "react-native-toast-message";
 import { couriers, facilities, generateOrderId } from "../data";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrders } from "../redux/features/OrderSlice";
+import { setUserNextOrder } from "../redux/features/AuthSlice";
+import axios from "axios";
 
 const Order = ({ navigation }) => {
   const [value, setValue] = useState(null);
@@ -29,6 +31,7 @@ const Order = ({ navigation }) => {
   const [courier, setCourier] = useState("");
   const [address, setAddress] = useState("");
   const [deliveryDate, setDeliveryDate] = useState(new Date());
+  const [span, setSpan] = useState("");
 
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
@@ -38,8 +41,8 @@ const Order = ({ navigation }) => {
     setDeliveryDate(time.nativeEvent.timestamp);
   }, []);
 
-  const handleSubmit = () => {
-    if (!facility || !courier || !address || !deliveryDate) {
+  const handleSubmit = async () => {
+    if (!facility || !courier || !address || !deliveryDate || !span) {
       return Toast.show({
         type: "error",
         text1: "Error",
@@ -47,20 +50,26 @@ const Order = ({ navigation }) => {
       });
     }
 
+    const patientMessage = `Your order has been placed successfully. \n Awaiting confirmation and delivery.`;
+    const clinicianMessage = `A new order has been placed. \n Login to the dashboard to process it.`;
+
     setLoading(true);
     setTimeout(() => {
       dispatch(
         updateOrders({
           facility,
           courier,
-          deliveryFee: 400,
+          deliveryFee: 0,
           orderId: generateOrderId(),
           deliverBy: new Date().getTime() + 60000000,
+          orderDate: new Date().getTime(),
           address,
           client: user.phone,
           status: "pending",
+          delivered: false,
         })
       );
+      dispatch(setUserNextOrder(parseInt(span) - 5));
       setLoading(false);
       Toast.show({
         type: "success",
@@ -137,6 +146,17 @@ const Order = ({ navigation }) => {
               size={25}
             />
           </TouchableOpacity>
+        </View>
+
+        {/* span  */}
+        <View style={{ marginTop: 10 }}>
+          <Text style={styles.label}>Prescription span (in days)</Text>
+          <TextInput
+            value={span}
+            onChangeText={(value) => setSpan(value.trim())}
+            style={styles.input}
+            placeholder="Enter days"
+          />
         </View>
 
         {/* Date picker */}

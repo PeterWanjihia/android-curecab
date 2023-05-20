@@ -8,11 +8,23 @@ import {
 import Navbar from "../components/Navbar";
 import TableComponent from "../components/TableComponent";
 import { colors } from "../assets/colors";
-import FeedBack from "../components/FeedBack";
+import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 const Welcome = ({ navigation }) => {
+  const { user } = useSelector((store) => store.auth);
+  const canOrder = user.next_order < new Date().getTime();
+
   const onPress = () => {
     navigation.navigate("Order");
+  };
+
+  const Greetings = () => {
+    let today = new Date();
+    let hourNow = today.getHours();
+
+    if (hourNow >= 0 && hourNow < 12) return "Good morning";
+    if (hourNow >= 12 && hourNow < 18) return "Good afternoon";
   };
 
   return (
@@ -24,22 +36,42 @@ const Welcome = ({ navigation }) => {
           <Text
             style={{ fontFamily: "Bold", color: colors.lblack, fontSize: 20 }}
           >
-            Welcome,
+            {Greetings()},
           </Text>
           <Text style={{ fontFamily: "Bold", fontSize: 30, marginVertical: 5 }}>
             John Doe
           </Text>
-          <Text style={{ fontFamily: "Regular", color: colors.lblack }}>
-            You can now request a new order and we'll get it delivered to you.
-          </Text>
+          {canOrder ? (
+            <>
+              <Text style={{ fontFamily: "Regular", color: colors.lblack }}>
+                You can now request a new order and we'll get it delivered to
+                you.
+              </Text>
 
-          <TouchableOpacity
-            onPress={onPress}
-            activeOpacity={0.6}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Make an order</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onPress}
+                activeOpacity={0.6}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Make an order</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text
+              style={{
+                padding: 5,
+                textAlign: "center",
+                fontFamily: "Regular",
+                color: "#752E32",
+                backgroundColor: "#F8EAE9",
+                fontSize: 16,
+                borderRadius: 5,
+              }}
+            >
+              You will be able to make your next order from{" "}
+              {dayjs(user.next_order).format("DD/MM/YYYY HH:mm")}.
+            </Text>
+          )}
         </View>
 
         <TableComponent />

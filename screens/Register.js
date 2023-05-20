@@ -24,6 +24,8 @@ function Register({ navigation }) {
   const [cpassword, setCpassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [foundUser, setFoundUser] = useState(null);
+  const [idModal, setIdModal] = useState(null);
+  const [id, setId] = useState(null);
   const [visible, setVisible] = useState(false);
 
   const handleRegister = () => {
