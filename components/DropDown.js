@@ -1,33 +1,32 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
-import { Dropdown } from "react-native-element-dropdown";
+import { colors } from "../assets/colors";
 
-const DropDown = ({ data, title, setValue, value, onChange }) => {
+const DropDown = ({ data, onPress, setValue }) => {
   const [isFocus, setIsFocus] = useState(false);
+  const [selected, setSelected] = useState(null);
+
   return (
-    <View>
-      <Dropdown
-        mode="modal"
-        style={[styles.dropdown, isFocus && { borderColor: "#F24A4E" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={data}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? title : "..."}
-        searchPlaceholder="Search..."
-        value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          onChange(item.value);
-          setIsFocus(false);
-        }}
-      />
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {data?.map((item, i) => {
+          const isSelected = item === selected;
+          return (
+            <Pressable
+              onPress={() => {
+                onPress(), setSelected(item), setValue(item);
+              }}
+              key={i}
+              style={[
+                styles,
+                { backgroundColor: isSelected ? colors.input : "white" },
+              ]}
+            >
+              <Text style={styles.text}>{item}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
@@ -36,45 +35,28 @@ export default DropDown;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    padding: 16,
+    backgroundColor: "#00000039",
+    flex: 1,
+    justifyContent: "center",
   },
-  dropdown: {
-    height: 50,
+  scrollView: {
+    height: undefined,
+    maxHeight: 250,
     borderRadius: 2,
     paddingHorizontal: 8,
-    backgroundColor: "#efefef",
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
     backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
+    padding: 20,
+  },
+  text: {
     fontSize: 14,
     fontFamily: "Regular",
+    color: colors.black,
   },
-  placeholderStyle: {
-    fontSize: 14,
-    fontFamily: "Regular",
-    color: "#777",
-  },
-  selectedTextStyle: {
-    fontSize: 14,
-    fontFamily: "Regular",
-    color: "#777",
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 14,
-    fontFamily: "Regular",
+  button: {
+    padding: 10,
+    marginBottom: 5,
+    borderColor: colors.bcolor,
+    borderWidth: 0.8,
   },
 });

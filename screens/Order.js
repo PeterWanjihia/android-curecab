@@ -9,40 +9,71 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as Icons from "react-native-vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { colors } from "../assets/colors";
-import DropDown from "../components/DropDown";
 import dayjs from "dayjs";
 import Toast from "react-native-toast-message";
-import { couriers, facilities, generateOrderId } from "../data";
+import { generateOrderId, getUserNextOrderDate } from "../data";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrders } from "../redux/features/OrderSlice";
-import { setUserNextOrder } from "../redux/features/AuthSlice";
+import { setUser } from "../redux/features/AuthSlice";
 import axios from "axios";
+import { url } from "../lib/axios";
+import SelectDropdown from "react-native-select-dropdown";
 
 const Order = ({ navigation }) => {
-  const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
+  const [facilities, setFacilities] = useState([]);
+  const [couriers, setCouriers] = useState([]);
   const [facility, setFacility] = useState("");
   const [courier, setCourier] = useState("");
   const [address, setAddress] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState(new Date());
+  const [deliverBy, setDeliverBy] = useState(new Date());
   const [span, setSpan] = useState("");
 
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
 
+  useEffect(() => {
+    const unsub = navigation.addListener("focus", async () => {
+      try {
+        Toast.show({
+          type: "info",
+          text1: "Please wait...",
+          text2: "Fetching facilities and couriers.",
+        });
+
+        const response = await Promise.all([
+          axios.get(url + "/couriers"),
+          axios.get(url + "/facilities"),
+        ]);
+
+        setCouriers(response[0].data.couriers);
+        setFacilities(response[1].data.facilities);
+        Toast.show({
+          type: "success",
+          text1: "Done",
+          text2: "Continue to place your order.",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    return unsub;
+  }, []);
+
   const onChangeTime = useCallback((time) => {
     setShow(false);
-    setDeliveryDate(time.nativeEvent.timestamp);
+    setDeliverBy(time.nativeEvent.timestamp);
   }, []);
 
   const handleSubmit = async () => {
-    if (!facility || !courier || !address || !deliveryDate || !span) {
+    if (!facility || !courier || !address || !deliverBy || !span) {
       return Toast.show({
         type: "error",
         text1: "Error",
@@ -50,34 +81,39 @@ const Order = ({ navigation }) => {
       });
     }
 
-    const patientMessage = `Your order has been placed successfully. \n Awaiting confirmation and delivery.`;
-    const clinicianMessage = `A new order has been placed. \n Login to the dashboard to process it.`;
-
     setLoading(true);
-    setTimeout(() => {
-      dispatch(
-        updateOrders({
-          facility,
-          courier,
-          deliveryFee: 0,
-          orderId: generateOrderId(),
-          deliverBy: new Date().getTime() + 60000000,
-          orderDate: new Date().getTime(),
-          address,
-          client: user.phone,
-          status: "pending",
-          delivered: false,
-        })
-      );
-      dispatch(setUserNextOrder(parseInt(span) - 5));
+    try {
+      const { data } = await axios.post(url + "/orders/make", {
+        client: user.phone,
+        orderId: generateOrderId(),
+        address,
+        courier,
+        deliverBy,
+        userId: user._id,
+        span: parseInt(span),
+        facility,
+        photoUrl: user.photoUrl,
+        next_order: getUserNextOrderDate(parseInt(span)),
+      });
+
       setLoading(false);
+      dispatch(updateOrders(data.order));
+      dispatch(setUser(data.user));
       Toast.show({
         type: "success",
         text1: "Success",
-        text2: "Your order has been placed successfully.",
+        text2: data.msg,
       });
       return navigation.navigate("Welcome");
-    }, 1500);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response.data.msg,
+      });
+    }
   };
 
   return (
@@ -93,28 +129,108 @@ const Order = ({ navigation }) => {
         {/* select facility */}
         <View style={{ marginBottom: 10 }}>
           <Text style={styles.label}>Clinic</Text>
-          <DropDown
-            data={facilities.map((fc) => {
-              return { label: fc.name, value: fc.name };
-            })}
-            title="Select clinic"
-            setValue={setValue}
-            value={facility}
-            onChange={(value) => setFacility(value)}
+
+          <SelectDropdown
+            renderDropdownIcon={() => (
+              <Icons.Feather
+                name="chevron-down"
+                size={30}
+                color={colors.lblack}
+              />
+            )}
+            defaultButtonText="- Select -"
+            search={true}
+            buttonStyle={{ width: "100%", color: colors.lblack }}
+            buttonTextStyle={{
+              fontFamily: "Regular",
+              fontSize: 14,
+            }}
+            dropdownStyle={{
+              borderRadius: 5,
+              backgroundColor: "white",
+            }}
+            searchInputStyle={{
+              backgroundColor: colors.input,
+            }}
+            searchInputTxtStyle={{
+              fontFamily: "Regular",
+              color: colors.lblack,
+              fontSize: 14,
+            }}
+            searchPlaceHolder="Search..."
+            disabled={facilities?.length === 0}
+            data={facilities?.map((f) => f.name)}
+            onSelect={(selectedItem) => {
+              setFacility(selectedItem);
+            }}
+            buttonTextAfterSelection={(selectedItem) => {
+              return (
+                <Text style={{ fontFamily: "Regular", fontSize: 16 }}>
+                  {selectedItem}
+                </Text>
+              );
+            }}
+            rowTextForSelection={(item) => {
+              return (
+                <Text style={{ fontFamily: "Regular", fontSize: 16 }}>
+                  {item}
+                </Text>
+              );
+            }}
           />
         </View>
 
         {/* courier select */}
         <View style={{ marginBottom: 10 }}>
           <Text style={styles.label}>Preffered Courier</Text>
-          <DropDown
-            data={couriers.map((co) => {
-              return { label: co, value: co };
-            })}
-            title="Select courier"
-            setValue={setValue}
-            value={courier}
-            onChange={(value) => setCourier(value)}
+
+          <SelectDropdown
+            renderDropdownIcon={() => (
+              <Icons.Feather
+                name="chevron-down"
+                size={30}
+                color={colors.lblack}
+              />
+            )}
+            search={true}
+            buttonStyle={{ width: "100%", color: colors.lblack }}
+            buttonTextStyle={{
+              fontFamily: "Regular",
+              fontSize: 14,
+            }}
+            dropdownStyle={{
+              borderRadius: 5,
+              backgroundColor: "white",
+            }}
+            searchInputStyle={{
+              backgroundColor: colors.input,
+            }}
+            searchInputTxtStyle={{
+              fontFamily: "Regular",
+              color: colors.lblack,
+              fontSize: 14,
+            }}
+            searchPlaceHolder="Search..."
+            disabled={couriers?.length === 0}
+            defaultButtonText=" - Select -"
+            data={couriers}
+            onSelect={(selectedItem) => {
+              setCourier(selectedItem);
+            }}
+            buttonTextAfterSelection={(selectedItem) => {
+              return (
+                <Text style={{ fontFamily: "Regular", fontSize: 16 }}>
+                  {selectedItem}
+                </Text>
+              );
+            }}
+            rowTextForSelection={(item) => {
+              return (
+                <Text style={{ fontFamily: "Regular", fontSize: 16 }}>
+                  {item}
+                </Text>
+              );
+            }}
           />
         </View>
 
@@ -138,7 +254,7 @@ const Order = ({ navigation }) => {
             style={styles.calendar}
           >
             <Text style={styles.calendarText}>
-              Change -- {dayjs(deliveryDate).format("DD/MM/YYYY")} --
+              Change -- {dayjs(deliverBy).format("DD/MM/YYYY")} --
             </Text>
             <Icons.Entypo
               color={colors.lblack}
@@ -162,7 +278,7 @@ const Order = ({ navigation }) => {
         {/* Date picker */}
         {show ? (
           <DateTimePicker
-            value={new Date(deliveryDate)}
+            value={new Date(deliverBy)}
             onChange={(value) => onChangeTime(value)}
             minimumDate={new Date()}
           />

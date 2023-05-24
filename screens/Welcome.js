@@ -6,14 +6,38 @@ import {
   ScrollView,
 } from "react-native";
 import Navbar from "../components/Navbar";
-import TableComponent from "../components/TableComponent";
+import Orders from "../components/Orders";
 import { colors } from "../assets/colors";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { setOrders } from "../redux/features/OrderSlice";
+import axios from "axios";
+import { url } from "../lib/axios";
+import Toast from "react-native-toast-message";
 
 const Welcome = ({ navigation }) => {
+  const [loading, setLoading] = useState(true);
   const { user } = useSelector((store) => store.auth);
-  const canOrder = user.next_order < new Date().getTime();
+  const canOrder = new Date(user.next_order) < new Date();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(url + "/orders/patient/" + user.phone);
+        setLoading(false);
+        dispatch(setOrders(data.orders));
+      } catch (error) {
+        setLoading(false);
+        return Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.response.data.msg,
+        });
+      }
+    })();
+  }, []);
 
   const onPress = () => {
     navigation.navigate("Order");
@@ -39,7 +63,7 @@ const Welcome = ({ navigation }) => {
             {Greetings()},
           </Text>
           <Text style={{ fontFamily: "Bold", fontSize: 30, marginVertical: 5 }}>
-            John Doe
+            {user.full_name}
           </Text>
           {canOrder ? (
             <>
@@ -74,7 +98,7 @@ const Welcome = ({ navigation }) => {
           )}
         </View>
 
-        <TableComponent />
+        <Orders loading={loading} />
         {/* 
         <FeedBack /> */}
       </ScrollView>

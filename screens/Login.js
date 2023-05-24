@@ -10,11 +10,13 @@ import {
 } from "react-native";
 import * as Icons from "react-native-vector-icons";
 import Toast from "react-native-toast-message";
+import PhoneInput from "react-phone-number-input/react-native-input";
 import { colors } from "../assets/colors";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/features/AuthSlice";
-import { patients } from "../data";
+import axios from "axios";
+import { url } from "../lib/axios";
 
 function Login({ navigation }) {
   const [phone, setPhone] = useState("");
@@ -22,7 +24,7 @@ function Login({ navigation }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!phone || !password)
       return Toast.show({
         type: "error",
@@ -38,37 +40,26 @@ function Login({ navigation }) {
       });
 
     setLoading(true);
-    setTimeout(() => {
-      const user = patients.find((p) => p.phone === phone);
-      if (!user) {
-        setLoading(false);
-        return Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Invalid credentials.",
-        });
-      }
-
-      const passwordMatch = password === user.password;
-      if (!passwordMatch) {
-        setLoading(false);
-        return Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Invalid credentials.",
-        });
-      }
-
-      dispatch(setUser(user));
+    try {
+      const { data } = await axios.post(url + "/patients/login", {
+        phone,
+        password,
+      });
       setLoading(false);
-
+      dispatch(setUser(data.user));
       return Toast.show({
         type: "success",
         text1: "Success",
-        text2: "You are now logged in.",
+        text2: data.msg,
       });
-    }, 1000);
-    //navigation.push("Welcome");
+    } catch (error) {
+      setLoading(false);
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response.data.msg,
+      });
+    }
   };
   return (
     <ScrollView
@@ -78,6 +69,7 @@ function Login({ navigation }) {
       <Pressable
         style={{ position: "absolute", left: 10, top: 10, zIndex: 23 }}
         onPress={() => navigation.goBack()}
+        disabled={loading}
       >
         <Icons.MaterialCommunityIcons
           color={colors.black}
@@ -93,17 +85,20 @@ function Login({ navigation }) {
 
       <View style={{ marginTop: 10 }}>
         <Text style={{ fontFamily: "Bold", fontSize: 16 }}>Phone number</Text>
-        <TextInput
-          value={phone}
-          onChangeText={(value) => setPhone(value.trim())}
+        <PhoneInput
+          disabled={loading}
           style={styles.input}
-          placeholder="+254 * * * * * * *"
+          defaultCountry="KE"
+          value={phone}
+          onChange={(value) => setPhone(value)}
+          placeholder="0712345678"
         />
       </View>
 
       <View style={{ marginTop: 10 }}>
         <Text style={{ fontFamily: "Bold", fontSize: 16 }}>Password</Text>
         <TextInput
+          disabled={loading}
           value={password}
           onChangeText={(value) => setPassword(value.trim())}
           style={styles.input}
@@ -130,6 +125,7 @@ function Login({ navigation }) {
         onPress={handleLogin}
         activeOpacity={0.85}
         style={styles.button}
+        disabled={loading}
       >
         {loading ? (
           <ActivityIndicator color={colors.white} size={30} />
@@ -189,6 +185,7 @@ const styles = StyleSheet.create({
     padding: 10,
     color: colors.lblack,
     marginTop: 5,
+    letterSpacing: 2,
   },
   button: {
     marginTop: 15,

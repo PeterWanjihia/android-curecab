@@ -14,22 +14,23 @@ import * as Icons from "react-native-vector-icons";
 import Toast from "react-native-toast-message";
 import { colors } from "../assets/colors";
 import { useState } from "react";
-import { EMR_patients, patients } from "../data";
+import PhoneInput from "react-phone-number-input/react-native-input";
+import { url } from "../lib/axios";
+import axios from "axios";
+import { generateAvatar } from "../lib/avatar";
 
 function Register({ navigation }) {
-  const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
-  const [ccc, setCcc] = useState("");
+  const [ccc_no, setCcc_no] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCpassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [foundUser, setFoundUser] = useState(null);
-  const [idModal, setIdModal] = useState(null);
+  const [idModal, setIdModal] = useState(false);
   const [id, setId] = useState(null);
-  const [visible, setVisible] = useState(false);
 
-  const handleRegister = () => {
-    if (!username || !phone || !ccc || !password || !cpassword)
+  const handleRegister = async () => {
+    if (!phone || !ccc_no || !password || !cpassword)
       return Toast.show({
         type: "error",
         text1: "Error",
@@ -51,47 +52,62 @@ function Register({ navigation }) {
       });
 
     setLoading(true);
-    setTimeout(() => {
-      const user = EMR_patients.find((p) => p.ccc_no === ccc);
-      if (!user) {
-        setLoading(false);
-        return Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Invalid CCC number.",
-        });
-      } else {
-        setFoundUser(user);
-        setVisible(true);
-      }
+    try {
+      const { data } = await axios.post(url + "/patients/validate", { ccc_no });
+      setFoundUser(data.user);
       setLoading(false);
-    }, 1000);
+    } catch (error) {
+      setLoading(false);
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response.data.msg,
+      });
+    }
   };
 
-  const handleAccept = (e) => {
-    e.preventDefault();
+  const handleAccept = async () => {
+    if (!id)
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Provide an ID number.",
+      });
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const { data } = await axios.post(url + "/patients/register", {
+        full_name: foundUser.full_name,
+        facility: foundUser.facility,
+        id_no: foundUser.id_no,
+        phone,
+        ccc_no,
+        password,
+        photoUrl: generateAvatar(foundUser.full_name),
+      });
+
       setLoading(false);
       setFoundUser(null);
-      setVisible(false);
-
-      // send a message to their
-
+      setIdModal(false);
       navigation.navigate("Login");
       return Toast.show({
         type: "success",
         text1: "Success",
         text2: "Your registration was successfull. Continue to login.",
       });
-    }, 1000);
+    } catch (error) {
+      setLoading(false);
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response.data.msg,
+      });
+    }
   };
 
   const handleReject = (e) => {
     e.preventDefault();
     setFoundUser(null);
-    setVisible(false);
   };
 
   return (
@@ -114,32 +130,26 @@ function Register({ navigation }) {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>Username</Text>
-          <TextInput
-            value={username}
-            onChangeText={(value) => setUsername(value.trim())}
-            style={styles.input}
-            placeholder="Enter username"
-          />
-        </View>
-
-        <View style={{ marginTop: 10 }}>
           <Text style={{ fontFamily: "Bold", fontSize: 16 }}>Phone number</Text>
-          <TextInput
-            value={phone}
-            onChangeText={(value) => setPhone(value.trim())}
+          <PhoneInput
+            disabled={loading}
             style={styles.input}
-            placeholder="+254 * * * * * * *"
+            defaultCountry="KE"
+            value={phone}
+            onChange={(value) => setPhone(value)}
+            placeholder="0712345678"
           />
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>CCC number</Text>
+          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>
+            CCC_no number
+          </Text>
           <TextInput
-            value={ccc}
-            onChangeText={(value) => setCcc(value.trim())}
+            value={ccc_no}
+            onChangeText={(value) => setCcc_no(value.trim())}
             style={styles.input}
-            placeholder="Enter your ccc number"
+            placeholder="Enter your ccc_no number"
           />
         </View>
 
@@ -181,15 +191,15 @@ function Register({ navigation }) {
           )}
         </TouchableOpacity>
 
-        <Modal transparent visible={visible}>
+        <Modal transparent visible={foundUser !== null}>
           <View style={styles.modal}>
             <View style={styles.modalView}>
               <Text style={styles.prompt}>
                 Is your name{" "}
                 <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
-                  {foundUser?.full_name}
+                  {foundUser?.full_name.split(" ")[0]}...
                 </Text>{" "}
-                with CCC number{" "}
+                with CCC_no number{" "}
                 <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
                   {foundUser?.ccc_no}
                 </Text>
@@ -207,6 +217,66 @@ function Register({ navigation }) {
                   </Text>
                 </Pressable>
                 <Pressable
+                  onPress={() => setIdModal(true)}
+                  style={[styles.modalBtn, { backgroundColor: colors.green }]}
+                >
+                  <Text
+                    style={{ fontSize: 20, fontFamily: "Bold", color: "white" }}
+                  >
+                    {foundUser && loading ? (
+                      <ActivityIndicator color={colors.white} size={30} />
+                    ) : (
+                      <Text
+                        style={{
+                          fontFamily: "Bold",
+                          fontSize: 18,
+                          color: "white",
+                        }}
+                      >
+                        YES
+                      </Text>
+                    )}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal transparent visible={idModal}>
+          <View style={styles.modal}>
+            <View style={styles.modalView}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  textAlign: "center",
+                  fontFamily: "Regular",
+                }}
+              >
+                Enter your ID number asscociated with this CCC number.
+              </Text>
+              <TextInput
+                value={id}
+                onChangeText={(value) => setId(value.trim())}
+                style={styles.input}
+                placeholder="12345678"
+                disabled={foundUser && loading}
+              />
+
+              <View style={styles.buttons}>
+                <Pressable
+                  disabled={foundUser && loading}
+                  onPress={() => setIdModal(false)}
+                  style={[styles.modalBtn, { backgroundColor: colors.red }]}
+                >
+                  <Text
+                    style={{ fontSize: 20, fontFamily: "Bold", color: "white" }}
+                  >
+                    CANCEL
+                  </Text>
+                </Pressable>
+                <Pressable
+                  disabled={foundUser && loading}
                   onPress={handleAccept}
                   style={[styles.modalBtn, { backgroundColor: colors.green }]}
                 >
@@ -223,7 +293,7 @@ function Register({ navigation }) {
                           color: "white",
                         }}
                       >
-                        NO
+                        SUBMIT
                       </Text>
                     )}
                   </Text>

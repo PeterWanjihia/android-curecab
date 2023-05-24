@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setUser } from "./redux/features/AuthSlice";
+import OrderDetails from "./screens/OrderDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,12 +34,24 @@ function Navigation() {
     <View style={{ paddingTop: StatusBar.currentHeight, flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{ headerShown: false, animation: "slide_from_right" }}
+          screenOptions={{
+            headerShown: false,
+            animation: "none",
+            animationDuration: 10,
+          }}
         >
           {user ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome} />
               <Stack.Screen name="Order" component={Order} />
+              <Stack.Screen
+                name="OrderDetails"
+                options={{
+                  animation: "slide_from_bottom",
+                  animationDuration: 10,
+                }}
+                component={OrderDetails}
+              />
             </>
           ) : (
             <>
