@@ -5,18 +5,19 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { colors } from "../assets/colors";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { useNavigation } from "@react-navigation/native";
 
-const Orders = ({ loading }) => {
+const Orders = ({ loading, onRefresh, refreshing }) => {
   const { orders } = useSelector((store) => store.orders);
   const navigation = useNavigation();
 
   return (
-    <View style={{ marginTop: 10 }}>
+    <View style={{ marginTop: 10, flex: 1 }}>
       <Text style={{ fontFamily: "Bold", marginBottom: 10, fontSize: 20 }}>
         Order history
       </Text>
@@ -27,7 +28,16 @@ const Orders = ({ loading }) => {
           style={{ alignSelf: "center" }}
         />
       ) : (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={onRefresh}
+              refreshing={refreshing}
+              colors={[colors.red]}
+            />
+          }
+          style={{ flex: 1 }}
+        >
           {orders?.map((order) => (
             <TouchableOpacity
               onPress={() => navigation.navigate("OrderDetails", { order })}

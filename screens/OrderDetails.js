@@ -119,7 +119,7 @@ const OrderDetails = ({ route, navigation }) => {
         <View style={styles.view}>
           <Text style={styles.label}>Order Date</Text>
           <Text style={styles.result}>
-            {dayjs(order.orderDate).format("DD/MM/YYYY")}
+            {dayjs(order.orderDate).format("DD/MM/YYYY hh:mm a")}
           </Text>
         </View>
 

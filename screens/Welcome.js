@@ -1,16 +1,10 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Navbar from "../components/Navbar";
 import Orders from "../components/Orders";
 import { colors } from "../assets/colors";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { setOrders } from "../redux/features/OrderSlice";
 import axios from "axios";
 import { url } from "../lib/axios";
@@ -18,25 +12,34 @@ import Toast from "react-native-toast-message";
 
 const Welcome = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const canOrder = new Date(user.next_order) < new Date();
   const dispatch = useDispatch();
 
+  const getOrders = async () => {
+    try {
+      const { data } = await axios.get(url + "/orders/patient/" + user.phone);
+      dispatch(setOrders(data.orders));
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.response.data.msg,
+      });
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(url + "/orders/patient/" + user.phone);
-        setLoading(false);
-        dispatch(setOrders(data.orders));
-      } catch (error) {
-        setLoading(false);
-        return Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: error.response.data.msg,
-        });
-      }
-    })();
+    getOrders();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await getOrders();
+    setRefreshing(false);
   }, []);
 
   const onPress = () => {
@@ -49,13 +52,14 @@ const Welcome = ({ navigation }) => {
 
     if (hourNow >= 0 && hourNow < 12) return "Good morning";
     if (hourNow >= 12 && hourNow < 18) return "Good afternoon";
+    return "Good Evening";
   };
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <Navbar />
 
-      <ScrollView showsVerticalScrollIndicator={false} style={{ padding: 10 }}>
+      <View style={{ padding: 10, flex: 1 }}>
         <View>
           <Text
             style={{ fontFamily: "Bold", color: colors.lblack, fontSize: 20 }}
@@ -98,10 +102,14 @@ const Welcome = ({ navigation }) => {
           )}
         </View>
 
-        <Orders loading={loading} />
+        <Orders
+          loading={loading}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
+        />
         {/* 
         <FeedBack /> */}
-      </ScrollView>
+      </View>
     </View>
   );
 };

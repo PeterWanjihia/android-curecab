@@ -79,7 +79,7 @@ function Register({ navigation }) {
       const { data } = await axios.post(url + "/patients/register", {
         full_name: foundUser.full_name,
         facility: foundUser.facility,
-        id_no: foundUser.id_no,
+        id_no: id,
         phone,
         ccc_no,
         password,
@@ -115,7 +115,7 @@ function Register({ navigation }) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.screen}
     >
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.screen}>
         <Pressable onPress={() => navigation.goBack()}>
           <Icons.MaterialCommunityIcons
             color={colors.black}
@@ -142,9 +142,7 @@ function Register({ navigation }) {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>
-            CCC_no number
-          </Text>
+          <Text style={{ fontFamily: "Bold", fontSize: 16 }}>CCC number</Text>
           <TextInput
             value={ccc_no}
             onChangeText={(value) => setCcc_no(value.trim())}
@@ -190,6 +188,30 @@ function Register({ navigation }) {
             </Text>
           )}
         </TouchableOpacity>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginTop: 30,
+          }}
+        >
+          <Text
+            style={{
+              marginHorizontal: "auto",
+              fontFamily: "Regular",
+              fontSize: 16,
+            }}
+          >
+            Already have an account?{" "}
+            <Text
+              style={{ color: colors.red }}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Login
+            </Text>
+          </Text>
+        </View>
 
         <Modal transparent visible={foundUser !== null}>
           <View style={styles.modal}>
@@ -314,6 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     flexDirection: "column",
+    flex: 1,
   },
   header: {
     flexDirection: "row",
